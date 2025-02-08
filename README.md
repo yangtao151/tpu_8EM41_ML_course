@@ -42,5 +42,7 @@ Visual Studio Code, Python, Jupyter extension pack, DVC extension pack.
 
 ### Дополнительные материалы
 Ссылка на документацию и установку DVC: https://dvc.org/
+
 Ссылка на пример построения пайплайна DVC: https://learn.iterative.ai/course/data-scientist-path
+
 Дополнительно по линейной регрессии: https://habr.com/ru/post/514818/
