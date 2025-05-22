@@ -14,3 +14,11 @@ stages:
     cmd: \
   validate_linear:
     cmd: ^
+  train_tree:
+    cmd: python train_tree.py
+    deps:
+    - prepare/X_train.csv
+    - prepare/y_train.csv
+    - train_tree.py
+    outs:
+    - models/tree_model.joblib
