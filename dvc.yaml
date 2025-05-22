@@ -60,3 +60,14 @@ stages:
     - train_xgb.py
     outs:
     - models/xgb_model.json
+  validate_xgb:
+    cmd: python validate_xgb.py
+    deps:
+    - models/xgb_model.json
+    - prepare/X_val.csv
+    - prepare/y_val.csv
+    - validate_xgb.py
+    outs:
+    - models/xgb_feature_importance.png
+    - models/xgb_feature_importance_full.png
+    - models/xgb_metrics.json
