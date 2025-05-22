@@ -33,3 +33,11 @@ stages:
     - models/tree_metrics.json
     - models/tree_structure.png
     - models/tree_structure_full.png
+  train_cat:
+    cmd: python train_cat.py
+    deps:
+    - prepare/X_train.csv
+    - prepare/y_train.csv
+    - train_cat.py
+    outs:
+    - models/cat_model.cbm
