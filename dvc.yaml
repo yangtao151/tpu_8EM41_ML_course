@@ -80,3 +80,12 @@ stages:
     outs:
     - models/mlp_loss_curve.png
     - models/mlp_model.joblib
+  validate_mlp:
+    cmd: python validate_mlp.py
+    deps:
+    - models/mlp_model.joblib
+    - prepare/X_val.csv
+    - prepare/y_val.csv
+    - validate_mlp.py
+    outs:
+    - models/mlp_metrics.json
