@@ -2,11 +2,13 @@ stages:
   prepare:
     cmd: python prepare/prepare.py
     deps:
-      - prepare/prepare.py
+    - prepare/prepare.py
     outs:
-      - prepare/X_full.csv
-      - prepare/y_full.csv
-      - prepare/X_train.csv
-      - prepare/y_train.csv
-      - prepare/X_val.csv
-      - prepare/y_val.csv
+    - prepare/X_full.csv
+    - prepare/y_full.csv
+    - prepare/X_train.csv
+    - prepare/y_train.csv
+    - prepare/X_val.csv
+    - prepare/y_val.csv
+  train_linear:
+    cmd: \
