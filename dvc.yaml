@@ -41,3 +41,14 @@ stages:
     - train_cat.py
     outs:
     - models/cat_model.cbm
+  validate_cat:
+    cmd: python validate_cat.py
+    deps:
+    - models/cat_model.cbm
+    - prepare/X_val.csv
+    - prepare/y_val.csv
+    - validate_cat.py
+    outs:
+    - models/cat_feature_importance.png
+    - models/cat_feature_importance_full.png
+    - models/cat_metrics.json
