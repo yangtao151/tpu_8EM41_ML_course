@@ -22,3 +22,14 @@ stages:
     - train_tree.py
     outs:
     - models/tree_model.joblib
+  validate_tree:
+    cmd: python validate_tree.py
+    deps:
+    - models/tree_model.joblib
+    - prepare/X_val.csv
+    - prepare/y_val.csv
+    - validate_tree.py
+    outs:
+    - models/tree_metrics.json
+    - models/tree_structure.png
+    - models/tree_structure_full.png
