@@ -12,3 +12,5 @@ stages:
     - prepare/y_val.csv
   train_linear:
     cmd: \
+  validate_linear:
+    cmd: ^
