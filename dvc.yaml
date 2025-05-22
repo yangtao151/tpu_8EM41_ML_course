@@ -52,3 +52,11 @@ stages:
     - models/cat_feature_importance.png
     - models/cat_feature_importance_full.png
     - models/cat_metrics.json
+  train_xgb:
+    cmd: python train_xgb.py
+    deps:
+    - prepare/X_train.csv
+    - prepare/y_train.csv
+    - train_xgb.py
+    outs:
+    - models/xgb_model.json
