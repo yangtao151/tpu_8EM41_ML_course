@@ -1,3 +1,34 @@
-# Add patterns of files dvc should ignore, which could improve
-# the performance. Learn more at
-# https://dvc.org/doc/user-guide/dvcignore
+# 忽略 Python 缓存和临时文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+.env/
+.venv/
+env/
+venv/
+
+# 忽略 IDE 和系统生成的垃圾文件
+.vscode/
+.DS_Store
+Thumbs.db
+
+# 忽略模型输出（由 DVC 管理） ✅ 保证不被 Git 跟踪
+/models/
+
+# 忽略 TensorBoard 日志（由 DVC 管理）
+/runs/
+
+# 忽略 prepare 阶段中生成的 CSV（由 DVC 管理）
+/prepare/X_*.csv
+/prepare/y_*.csv
+
+# 保留 DVC 所需文件
+!.dvc/
+!.dvcignore
+!dvc.yaml
+!dvc.lock
+
+# 可选忽略 DVC 渲染图（性能优化）
+dvc_pipeline.png

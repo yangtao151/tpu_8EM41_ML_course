@@ -1,0 +1,17 @@
+# 模型输出文件（由 DVC 管理）
+/models/tree_model.joblib
+/models/tree_metrics.json
+/models/tree_structure.png
+/models/tree_structure_full.png
+/models/cat_model.cbm
+/models/cat_metrics.json
+/models/cat_feature_importance.png
+/models/cat_feature_importance_full.png
+/models/xgb_model.json
+/models/xgb_metrics.json
+/models/xgb_feature_importance.png
+/models/xgb_feature_importance_full.png
+/models/mlp_model.joblib
+/models/mlp_loss_curve.png
+/models/mlp_metrics.json
+/models/mlp_weight_hist.png
