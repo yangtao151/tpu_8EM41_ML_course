@@ -78,8 +78,10 @@ stages:
     - prepare/y_train.csv
     - train_mlp.py
     outs:
-    - models/mlp_loss_curve.png
     - models/mlp_model.joblib
+    - models/mlp_loss_curve.png
+    - models/mlp_weight_hist.png
+    - runs/mlp/
   validate_mlp:
     cmd: python validate_mlp.py
     deps:
