@@ -1,44 +1,46 @@
-# fullrun_linear.py
 import pandas as pd
 import joblib
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import numpy as np
 import matplotlib.pyplot as plt
+import json
 import os
 
-# 加载全量数据
-X = pd.read_csv("prepare/X_full.csv")
-y = pd.read_csv("prepare/y_full.csv")
+# 创建目录
+os.makedirs("metrics", exist_ok=True)
+os.makedirs("models", exist_ok=True)
 
-# 模型训练
-model = LinearRegression()
-model.fit(X, y)
+# 加载完整数据
+X_full = pd.read_csv("prepare/X_full.csv")
+y_full = pd.read_csv("prepare/y_full.csv")
+
+# 加载模型
+model = joblib.load("models/linear_model.pkl")
 
 # 预测
-y_pred = model.predict(X)
+y_pred = model.predict(X_full)
 
-# 评估
-r2 = r2_score(y, y_pred)
-mae = mean_absolute_error(y, y_pred)
-mse = mean_squared_error(y, y_pred)
-rmse = np.sqrt(mse)
+# 评估指标
+metrics = {
+    "R2": float(r2_score(y_full, y_pred)),
+    "MAE": float(mean_absolute_error(y_full, y_pred)),
+    "MSE": float(mean_squared_error(y_full, y_pred)),
+    "RMSE": float(np.sqrt(mean_squared_error(y_full, y_pred)))
+}
+
+# 保存指标
+with open("metrics/linear_full_metrics.json", "w") as f:
+    json.dump(metrics, f, indent=2)
 
 print("✅ 全数据评估结果：")
-print(f"R²   = {r2:.4f}")
-print(f"MAE  = {mae:.2f}")
-print(f"MSE  = {mse:.2f}")
-print(f"RMSE = {rmse:.2f}")
-
-# 输出图像
-os.makedirs("models", exist_ok=True)
+print(metrics)
 
 # 📉 残差图
 plt.figure(figsize=(8, 5))
-plt.scatter(y_pred, y - y_pred, alpha=0.6)
+plt.scatter(y_pred, y_full - y_pred, alpha=0.6)
 plt.axhline(y=0, color="r", linestyle="--")
 plt.title("Residual Plot (Full Data)")
-plt.xlabel("Predicted Price")
+plt.xlabel("Predicted Value")
 plt.ylabel("Residuals")
 plt.grid(True)
 plt.tight_layout()
@@ -47,11 +49,11 @@ plt.show()
 
 # 📈 真实 vs 预测图
 plt.figure(figsize=(8, 5))
-plt.scatter(y, y_pred, alpha=0.6)
-plt.plot([y.min(), y.max()], [y.min(), y.max()], 'r--')
+plt.scatter(y_full, y_pred, alpha=0.6)
+plt.plot([y_full.min(), y_full.max()], [y_full.min(), y_full.max()], 'r--')
 plt.title("Predicted vs Actual (Full Data)")
-plt.xlabel("Actual Selling Price")
-plt.ylabel("Predicted Selling Price")
+plt.xlabel("Actual Value")
+plt.ylabel("Predicted Value")
 plt.grid(True)
 plt.tight_layout()
 plt.savefig("models/pred_vs_actual_linear_full.png")

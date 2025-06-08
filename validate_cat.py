@@ -1,46 +1,40 @@
-# validate_cat.py
 import pandas as pd
 import os
 import numpy as np
 import json
 import matplotlib.pyplot as plt
-from catboost import CatBoostRegressor
+import joblib
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
 # 加载验证集
 X_val = pd.read_csv("prepare/X_val.csv")
 y_val = pd.read_csv("prepare/y_val.csv").squeeze()
 
-# 加载模型
-model = CatBoostRegressor()
-model.load_model("models/cat_model.cbm")
+# 加载模型 (.pkl)
+model = joblib.load("models/catboost_model.pkl")
 
 # 预测
 y_pred = model.predict(X_val)
 
-# 评估指标
-r2 = r2_score(y_val, y_pred)
-mae = mean_absolute_error(y_val, y_pred)
-mse = mean_squared_error(y_val, y_pred)
-rmse = np.sqrt(mse)
-
+# 计算指标
 metrics = {
-    "R2": round(r2, 4),
-    "MAE": round(mae, 2),
-    "MSE": round(mse, 2),
-    "RMSE": round(rmse, 2)
+    "R2": float(r2_score(y_val, y_pred)),
+    "MAE": float(mean_absolute_error(y_val, y_pred)),
+    "MSE": float(mean_squared_error(y_val, y_pred)),
+    "RMSE": float(np.sqrt(mean_squared_error(y_val, y_pred)))
 }
 
 # 保存指标
-os.makedirs("models", exist_ok=True)
-with open("models/cat_metrics.json", "w") as f:
+os.makedirs("metrics", exist_ok=True)
+with open("metrics/cat_val_metrics.json", "w") as f:
     json.dump(metrics, f, indent=2)
 
-print("✅ CatBoost 验证指标：")
+print("✅ CatBoost 验证指标如下：")
 print(metrics)
 
-# 📊 特征重要性可视化
+# 📊 特征重要性图
 importances = model.get_feature_importance(prettified=True)
+
 plt.figure(figsize=(10, 6))
 plt.barh(importances['Feature Id'], importances['Importances'])
 plt.xlabel("Importance")

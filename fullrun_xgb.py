@@ -1,33 +1,43 @@
-# fullrun_xgb.py
 import pandas as pd
 import os
 import numpy as np
+import json
 import matplotlib.pyplot as plt
-import xgboost as xgb
+import joblib
+from xgboost import plot_importance
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
-# 加载全数据集
+# 加载全数据
 X = pd.read_csv("prepare/X_full.csv")
 y = pd.read_csv("prepare/y_full.csv").squeeze()
 
-# 模型训练
-model = xgb.XGBRegressor(random_state=42, verbosity=0)
-model.fit(X, y)
+# 加载已训练模型
+model = joblib.load("models/xgb_model.pkl")
 
-# 模型预测
+# 预测
 y_pred = model.predict(X)
 
-# 输出评估指标
-print("✅ 全数据训练评估：")
-print(f"R²   = {r2_score(y, y_pred):.4f}")
-print(f"MAE  = {mean_absolute_error(y, y_pred):.2f}")
-print(f"MSE  = {mean_squared_error(y, y_pred):.2f}")
-print(f"RMSE = {np.sqrt(mean_squared_error(y, y_pred)):.2f}")
+# 评估指标
+metrics = {
+    "R2": float(r2_score(y, y_pred)),
+    "MAE": float(mean_absolute_error(y, y_pred)),
+    "MSE": float(mean_squared_error(y, y_pred)),
+    "RMSE": float(np.sqrt(mean_squared_error(y, y_pred)))
+}
 
-# 可视化：特征重要性图（全数据）
+# 保存指标
+os.makedirs("metrics", exist_ok=True)
+with open("metrics/xgb_full_metrics.json", "w") as f:
+    json.dump(metrics, f, indent=2)
+
+print("✅ XGBoost 全数据评估指标如下：")
+print(metrics)
+
+# 📊 特征重要性图
 plt.figure(figsize=(10, 6))
-xgb.plot_importance(model, importance_type="gain", xlabel="Gain")
+plot_importance(model, importance_type="gain", xlabel="Gain")
 plt.title("XGBoost Feature Importance (Full Data)")
 plt.tight_layout()
+os.makedirs("models", exist_ok=True)
 plt.savefig("models/xgb_feature_importance_full.png")
 plt.show()

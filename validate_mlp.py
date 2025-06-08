@@ -1,34 +1,37 @@
-# validate_mlp.py
 import pandas as pd
 import os
 import joblib
 import json
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
-# 加载验证数据
+# ========== 1. 加载验证数据 ==========
 X_val = pd.read_csv("prepare/X_val.csv")
 y_val = pd.read_csv("prepare/y_val.csv").squeeze()
 
-# 加载模型
-model = joblib.load("models/mlp_model.joblib")
+# ========== 2. 加载 scaler 并标准化 ==========
+scaler = joblib.load("models/mlp_scaler.joblib")
+X_val_scaled = scaler.transform(X_val)
 
-# 预测
-y_pred = model.predict(X_val)
+# ========== 3. 加载模型并预测 ==========
+model = joblib.load("models/mlp_model.pkl")
+y_pred = model.predict(X_val_scaled)
 
-# 评估指标
+# ========== 4. 计算评估指标 ==========
 metrics = {
-    "R2": round(r2_score(y_val, y_pred), 4),
-    "MAE": round(mean_absolute_error(y_val, y_pred), 2),
-    "MSE": round(mean_squared_error(y_val, y_pred), 2),
-    "RMSE": round(np.sqrt(mean_squared_error(y_val, y_pred)), 2)
+    "R2": float(r2_score(y_val, y_pred)),
+    "MAE": float(mean_absolute_error(y_val, y_pred)),
+    "MSE": float(mean_squared_error(y_val, y_pred)),
+    "RMSE": float(np.sqrt(mean_squared_error(y_val, y_pred)))
 }
 
-# 保存指标
-os.makedirs("models", exist_ok=True)
-with open("models/mlp_metrics.json", "w") as f:
+# ========== 5. 保存指标 ==========
+os.makedirs("metrics", exist_ok=True)
+with open("metrics/mlp_val_metrics.json", "w") as f:
     json.dump(metrics, f, indent=2)
 
-print("✅ MLP 验证指标：")
+# ========== 6. 输出指标 ==========
+print("✅ MLP 验证指标如下：")
 for k, v in metrics.items():
     print(f"{k}: {v}")

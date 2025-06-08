@@ -4,3 +4,6 @@
 /y_train.csv
 /X_val.csv
 /y_val.csv
+/X_train_scaled.csv
+/X_val_scaled.csv
+/X_full_scaled.csv

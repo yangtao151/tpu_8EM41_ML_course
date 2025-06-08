@@ -1,36 +1,43 @@
-# fullrun_tree.py
 import pandas as pd
 import joblib
 import os
-from sklearn.tree import DecisionTreeRegressor, plot_tree
+import json
+import numpy as np
+from sklearn.tree import plot_tree
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 import matplotlib.pyplot as plt
 
-# 加载全量数据
+# 创建目录
+os.makedirs("metrics", exist_ok=True)
+os.makedirs("models", exist_ok=True)
+
+# 加载完整数据
 X = pd.read_csv("prepare/X_full.csv")
 y = pd.read_csv("prepare/y_full.csv").squeeze()
 
-# 模型训练
-model = DecisionTreeRegressor(random_state=42)
-model.fit(X, y)
+# 加载已训练模型
+model = joblib.load("models/tree_model.pkl")
 
-# 预测
+# 模型预测
 y_pred = model.predict(X)
 
-# 指标
-r2 = r2_score(y, y_pred)
-mae = mean_absolute_error(y, y_pred)
-mse = mean_squared_error(y, y_pred)
-rmse = mse ** 0.5
+# 计算评估指标
+metrics = {
+    "R2": float(r2_score(y, y_pred)),
+    "MAE": float(mean_absolute_error(y, y_pred)),
+    "MSE": float(mean_squared_error(y, y_pred)),
+    "RMSE": float(np.sqrt(mean_squared_error(y, y_pred)))
+}
 
-print("✅ 决策树全数据评估结果：")
-print(f"R²   = {r2:.4f}")
-print(f"MAE  = {mae:.2f}")
-print(f"MSE  = {mse:.2f}")
-print(f"RMSE = {rmse:.2f}")
+# 保存指标
+with open("metrics/tree_full_metrics.json", "w") as f:
+    json.dump(metrics, f, indent=2)
+
+print("✅ 决策树全数据评估指标如下：")
+for k, v in metrics.items():
+    print(f"{k}: {v}")
 
 # 保存结构图
-os.makedirs("models", exist_ok=True)
 plt.figure(figsize=(24, 12))
 plot_tree(
     model,

@@ -19,4 +19,4 @@
 /linear_metrics.json
 /residual_linear.png
 /pred_vs_actual_linear.png
-/mlp_loss_curve_full.png
+/mlp_scaler.joblib

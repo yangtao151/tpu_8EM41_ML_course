@@ -2,173 +2,192 @@ stages:
   prepare:
     cmd: python prepare/prepare.py
     deps:
-    - prepare/prepare.py
+      - prepare/prepare.py
     outs:
-    - prepare/X_full.csv
-    - prepare/y_full.csv
-    - prepare/X_train.csv
-    - prepare/y_train.csv
-    - prepare/X_val.csv
-    - prepare/y_val.csv
+      - prepare/X_full.csv
+      - prepare/y_full.csv
+      - prepare/X_train.csv
+      - prepare/y_train.csv
+      - prepare/X_val.csv
+      - prepare/y_val.csv
+
+  normalize:
+    cmd: python prepare/normalize.py
+    deps:
+      - prepare/X_full.csv
+      - prepare/X_train.csv
+      - prepare/X_val.csv
+      - prepare/normalize.py
+    outs:
+      - models/mlp_scaler.pkl
+      - prepare/X_full_scaled.csv
+      - prepare/X_train_scaled.csv
+      - prepare/X_val_scaled.csv
 
   train_linear:
     cmd: python train_linear.py
     deps:
-    - prepare/X_train.csv
-    - prepare/y_train.csv
-    - train_linear.py
+      - prepare/X_train.csv
+      - prepare/y_train.csv
+      - train_linear.py
     outs:
-    - models/linear_model.joblib
+      - models/linear_model.pkl
 
   validate_linear:
     cmd: python validate_linear.py
     deps:
-    - prepare/X_val.csv
-    - prepare/y_val.csv
-    - models/linear_model.joblib
-    - validate_linear.py
+      - prepare/X_val.csv
+      - prepare/y_val.csv
+      - models/linear_model.pkl
+      - validate_linear.py
     outs:
-    - models/linear_metrics.json
-    - models/residual_linear.png
-    - models/pred_vs_actual_linear.png
+      - metrics/linear_val_metrics.json
+      - models/residual_linear.png
+      - models/pred_vs_actual_linear.png
 
   fullrun_linear:
     cmd: python fullrun_linear.py
     deps:
-    - prepare/X_full.csv
-    - prepare/y_full.csv
-    - models/linear_model.joblib
-    - fullrun_linear.py
+      - prepare/X_full.csv
+      - prepare/y_full.csv
+      - models/linear_model.pkl
+      - fullrun_linear.py
     outs:
-    - models/linear_model_full.joblib
-    - models/residual_linear_full.png
-    - models/pred_vs_actual_linear_full.png
+      - metrics/linear_full_metrics.json
+      - models/residual_linear_full.png
+      - models/pred_vs_actual_linear_full.png
 
   train_tree:
     cmd: python train_tree.py
     deps:
-    - prepare/X_train.csv
-    - prepare/y_train.csv
-    - train_tree.py
+      - prepare/X_train.csv
+      - prepare/y_train.csv
+      - train_tree.py
     outs:
-    - models/tree_model.joblib
+      - models/tree_model.pkl
 
   validate_tree:
     cmd: python validate_tree.py
     deps:
-    - models/tree_model.joblib
-    - prepare/X_val.csv
-    - prepare/y_val.csv
-    - validate_tree.py
+      - models/tree_model.pkl
+      - prepare/X_val.csv
+      - prepare/y_val.csv
+      - validate_tree.py
     outs:
-    - models/tree_metrics.json
-    - models/tree_structure.png
-    - models/tree_structure_full.png
+      - metrics/tree_val_metrics.json
+      - models/tree_structure.png
 
   fullrun_tree:
     cmd: python fullrun_tree.py
     deps:
-    - prepare/X_full.csv
-    - prepare/y_full.csv
-    - models/tree_model.joblib
-    - fullrun_tree.py
+      - prepare/X_full.csv
+      - prepare/y_full.csv
+      - models/tree_model.pkl
+      - fullrun_tree.py
     outs:
-    - models/tree_model_full.joblib
-    - models/tree_structure_fullrun.png
+      - metrics/tree_full_metrics.json
+      - models/tree_structure_full.png
 
   train_cat:
     cmd: python train_cat.py
     deps:
-    - prepare/X_train.csv
-    - prepare/y_train.csv
-    - train_cat.py
+      - prepare/X_train.csv
+      - prepare/y_train.csv
+      - train_cat.py
     outs:
-    - models/cat_model.cbm
+      - models/catboost_model.pkl
 
   validate_cat:
     cmd: python validate_cat.py
     deps:
-    - models/cat_model.cbm
-    - prepare/X_val.csv
-    - prepare/y_val.csv
-    - validate_cat.py
+      - models/catboost_model.pkl
+      - prepare/X_val.csv
+      - prepare/y_val.csv
+      - validate_cat.py
     outs:
-    - models/cat_feature_importance.png
-    - models/cat_feature_importance_full.png
-    - models/cat_metrics.json
+      - metrics/cat_val_metrics.json
+      - models/cat_feature_importance.png
 
   fullrun_cat:
     cmd: python fullrun_cat.py
     deps:
-    - prepare/X_full.csv
-    - prepare/y_full.csv
-    - models/cat_model.cbm
-    - fullrun_cat.py
+      - prepare/X_full.csv
+      - prepare/y_full.csv
+      - models/catboost_model.pkl
+      - fullrun_cat.py
     outs:
-    - models/cat_model_full.cbm
-    - models/cat_metrics_full.json
+      - metrics/cat_full_metrics.json
+      - models/cat_feature_importance_full.png
 
   train_xgb:
     cmd: python train_xgb.py
     deps:
-    - prepare/X_train.csv
-    - prepare/y_train.csv
-    - train_xgb.py
+      - prepare/X_train.csv
+      - prepare/y_train.csv
+      - train_xgb.py
     outs:
-    - models/xgb_model.json
+      - models/xgb_model.pkl
 
   validate_xgb:
     cmd: python validate_xgb.py
     deps:
-    - models/xgb_model.json
-    - prepare/X_val.csv
-    - prepare/y_val.csv
-    - validate_xgb.py
+      - models/xgb_model.pkl
+      - prepare/X_val.csv
+      - prepare/y_val.csv
+      - validate_xgb.py
     outs:
-    - models/xgb_feature_importance.png
-    - models/xgb_feature_importance_full.png
-    - models/xgb_metrics.json
+      - metrics/xgb_val_metrics.json
+      - models/xgb_feature_importance.png
 
   fullrun_xgb:
     cmd: python fullrun_xgb.py
     deps:
-    - prepare/X_full.csv
-    - prepare/y_full.csv
-    - models/xgb_model.json
-    - fullrun_xgb.py
+      - prepare/X_full.csv
+      - prepare/y_full.csv
+      - models/xgb_model.pkl
+      - fullrun_xgb.py
     outs:
-    - models/xgb_model_full.json
-    - models/xgb_metrics_full.json
+      - metrics/xgb_full_metrics.json
+      - models/xgb_feature_importance_full.png
 
   train_mlp:
     cmd: python train_mlp.py
     deps:
-    - prepare/X_train.csv
-    - prepare/y_train.csv
-    - train_mlp.py
+      - prepare/X_train_scaled.csv
+      - prepare/y_train.csv
+      - train_mlp.py
+    params:
+      - mlp.hidden_layer_sizes
+      - mlp.activation
+      - mlp.solver
+      - mlp.max_iter
     outs:
-    - models/mlp_model.joblib
-    - models/mlp_loss_curve.png
-    - models/mlp_weight_hist.png
-    - runs/mlp/
+      - models/mlp_model.pkl
+      - models/mlp_loss_curve.png
+      - models/mlp_weight_hist.png
+      - runs/mlp/
 
   validate_mlp:
     cmd: python validate_mlp.py
     deps:
-    - models/mlp_model.joblib
-    - prepare/X_val.csv
-    - prepare/y_val.csv
-    - validate_mlp.py
+      - models/mlp_model.pkl
+      - models/mlp_scaler.pkl
+      - prepare/X_val_scaled.csv
+      - prepare/y_val.csv
+      - validate_mlp.py
     outs:
-    - models/mlp_metrics.json
+      - metrics/mlp_val_metrics.json
+      - models/mlp_pred_vs_actual_val.png
 
   fullrun_mlp:
     cmd: python fullrun_mlp.py
     deps:
-    - prepare/X_full.csv
-    - prepare/y_full.csv
-    - models/mlp_model.joblib
-    - fullrun_mlp.py
+      - prepare/X_full_scaled.csv
+      - prepare/y_full.csv
+      - models/mlp_model.pkl
+      - models/mlp_scaler.pkl
+      - fullrun_mlp.py
     outs:
-    - models/mlp_model_full.joblib
-    - models/mlp_loss_curve_full.png
+      - metrics/mlp_full_metrics.json
+      - models/mlp_loss_curve_full.png
+      - models/mlp_pred_vs_actual_full.png
